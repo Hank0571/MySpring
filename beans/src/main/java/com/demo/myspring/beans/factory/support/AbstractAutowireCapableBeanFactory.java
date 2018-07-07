@@ -19,6 +19,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return null;
     }
 
+    public Object createBean(String name) throws Exception {
+        BeanDefinition beanDefinition = getBeanDefinition(name);
+        return doCreateBean(beanDefinition);
+    }
+
     /**
      * Create the specified bean from beanDefinition.
      *
@@ -70,7 +75,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             PropertyValue propertyValue = propertyValues[i];
             for (int j = 0; j < propertyDescriptors.length; j++) {
                 if (propertyDescriptors[j].getName().equals(propertyValue.getName())) {
-                    propertyDescriptors[j].getWriteMethod().invoke(bean, propertyValue.getValue());
+                    if (propertyValue.getValue() instanceof BeanReference) {
+                        BeanReference beanReference = (BeanReference)(propertyValue.getValue());
+                        Object refBean = getBean(beanReference.getBeanName());
+                        propertyDescriptors[j].getWriteMethod().invoke(bean, refBean);
+                    } else {
+                        propertyDescriptors[j].getWriteMethod().invoke(bean, propertyValue.getValue());
+                    }
                 }
             }
         }

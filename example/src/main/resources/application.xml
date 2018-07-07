@@ -6,7 +6,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="helloService" class="com.demo.myspring.example.services.impl.HelloServiceImpl">
+    <bean id="helloService" class="com.demo.myspring.example.services.HelloService">
         <property name="text" value="World"></property>
     </bean>
 

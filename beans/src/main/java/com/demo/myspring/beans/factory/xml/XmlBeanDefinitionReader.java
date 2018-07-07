@@ -5,6 +5,7 @@ import com.demo.myspring.beans.factory.config.BeanDefinition;
 import com.demo.myspring.beans.factory.support.AbstractBeanDefinition;
 import com.demo.myspring.beans.factory.support.AbstractBeanDefinitionReader;
 import com.demo.myspring.beans.factory.support.BeanDefinitionRegistry;
+import com.demo.myspring.beans.factory.support.BeanReference;
 import com.demo.myspring.core.io.Resource;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -98,10 +99,19 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
                 Element propertyEle = (Element)node;
                 String propertyName = propertyEle.getAttribute("name");
                 String propertyValue = propertyEle.getAttribute("value");
+                String ref = propertyEle.getAttribute("ref");
                 if (propertyName == null || propertyValue == null || propertyValue.isEmpty()) {
-                    return;
+                    if (ref == null) {
+                        return;
+                    }
+                    /// Reference to bean.
+                    BeanReference beanReference = new BeanReference();
+                    beanReference.setBeanName(ref);
+                    beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, beanReference));
+                } else {
+                    /// Set property value.
+                    beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, propertyValue));
                 }
-                beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, propertyValue));
             }
         }
 

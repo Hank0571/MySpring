@@ -10,10 +10,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory implements BeanDefinitionRegistry {
 
-    /** Map of beanDefinition, keyed by bean name */
+    /** Map of beanDefinition, keyed by bean name **/
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(16);
-    /** Map of singleton objects */
+    /** Map of singleton objects **/
     private final Map<String, Object> singleObjects = new ConcurrentHashMap<>(16);
+    /** Map of early created singleton objects **/
+    private final Map<String, Object> earlySingleObjects = new ConcurrentHashMap<>(16);
 
     @Override
     public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) {
@@ -31,16 +33,36 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     }
 
     @Override
-    public Object getBean(String name) throws Exception {
+    public Object createBean(String name) throws Exception {
         Object bean = singleObjects.get(name);
         if (bean == null) {
             BeanDefinition beanDefinition = beanDefinitionMap.get(name);
+            bean = earlySingleObjects.get(name);
+            if (bean == null) {
+                if (beanDefinition != null) {
+                    bean = createBeanInstance(beanDefinition);
+                    earlySingleObjects.put(name, bean);
+                }
+            }
             if (beanDefinition != null) {
-                bean = doCreateBean(beanDefinition);
+                populateBean(bean, beanDefinition);
+                earlySingleObjects.remove(name);
                 singleObjects.put(name, bean);
-                return bean;
             }
         }
-        return null;
+        return bean;
+    }
+
+    @Override
+    public Object getBean(String name) throws Exception {
+        Object bean = singleObjects.get(name);
+        if (bean == null) {
+            /// Check if bean is creating.
+            bean = earlySingleObjects.get(name);
+            if (bean == null) {
+                return createBean(name);
+            }
+        }
+        return bean;
     }
 }
