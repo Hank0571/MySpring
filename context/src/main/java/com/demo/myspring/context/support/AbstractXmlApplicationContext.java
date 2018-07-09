@@ -21,7 +21,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableA
     }
 
     @Override
-    public Object getBean(String name) throws Exception {
+    public Object getBean(String name) {
         return getBeanFactory().getBean(name);
     }
 

@@ -2,6 +2,10 @@ package com.demo.myspring.beans.factory.support;
 
 import com.demo.myspring.beans.factory.BeanFactory;
 import com.demo.myspring.beans.factory.config.BeanDefinition;
+import com.demo.myspring.beans.factory.config.BeanPostProcessor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract class for beanFactory.
@@ -10,5 +14,16 @@ import com.demo.myspring.beans.factory.config.BeanDefinition;
  */
 public abstract class AbstractBeanFactory implements BeanFactory {
 
+    private List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+
     protected abstract BeanDefinition getBeanDefinition(String beanName);
+    
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return beanPostProcessors;
+    }
+
+    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
+        beanPostProcessors.remove(beanPostProcessor);
+        beanPostProcessors.add(beanPostProcessor);
+    }
 }

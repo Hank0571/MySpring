@@ -1,7 +1,9 @@
 package com.demo.myspring.beans.factory.support;
 
+import com.demo.myspring.beans.BeanException;
 import com.demo.myspring.beans.factory.config.BeanDefinition;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,7 +35,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     }
 
     @Override
-    public Object createBean(String name) throws Exception {
+    public Object createBean(String name) throws BeanException {
         Object bean = singleObjects.get(name);
         if (bean == null) {
             BeanDefinition beanDefinition = beanDefinitionMap.get(name);
@@ -46,6 +48,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
             }
             if (beanDefinition != null) {
                 populateBean(bean, beanDefinition);
+                initializeBean(name, bean);
                 earlySingleObjects.remove(name);
                 singleObjects.put(name, bean);
             }
@@ -54,7 +57,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     }
 
     @Override
-    public Object getBean(String name) throws Exception {
+    public Object getBean(String name) throws BeanException {
         Object bean = singleObjects.get(name);
         if (bean == null) {
             /// Check if bean is creating.
@@ -64,5 +67,25 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
             }
         }
         return bean;
+    }
+
+    public Map<String, Object> getBeansForType(Class<?> type) {
+        Map<String, Object> beanMap = new HashMap<>();
+        for (Map.Entry<String, BeanDefinition> entry : beanDefinitionMap.entrySet()) {
+            if (type.isAssignableFrom(entry.getValue().getBeanClass())) {
+                Object bean = getBean(entry.getKey());
+                beanMap.put(entry.getKey(), bean);
+            }
+        }
+        return beanMap;
+    }
+
+    /**
+     * Instantiate all singleton beans.
+     */
+    public void preInstantiateSingletons() {
+        for (String key : this.beanDefinitionMap.keySet()) {
+            getBean(key);
+        }
     }
 }

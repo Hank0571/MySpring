@@ -12,8 +12,6 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 
     private String[] configLocations;
 
-    private DefaultListableBeanFactory beanFactory;
-
     public abstract void loadBeanDefinitions(DefaultListableBeanFactory beanFactory);
 
     protected DefaultListableBeanFactory createBeanFactory() {
@@ -21,14 +19,14 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
     }
 
     @Override
-    public AbstractAutowireCapableBeanFactory getBeanFactory() {
+    public DefaultListableBeanFactory getBeanFactory() {
         return beanFactory;
     }
 
     @Override
     protected void refreshBeanFactory() {
         DefaultListableBeanFactory beanFactory = createBeanFactory();
-        loadBeanDefinitions(beanFactory);
         this.beanFactory = beanFactory;
+        loadBeanDefinitions(beanFactory);
     }
 }

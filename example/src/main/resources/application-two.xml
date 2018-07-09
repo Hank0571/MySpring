@@ -21,4 +21,6 @@
         <property name="testRefA" ref="testRefA"></property>
     </bean>
 
+    <bean id="simpleBeanPostProcessor" class="com.demo.myspring.example.services.SimpleBeanPostProcessor"/>
+
 </beans>

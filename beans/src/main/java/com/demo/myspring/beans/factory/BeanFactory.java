@@ -1,5 +1,7 @@
 package com.demo.myspring.beans.factory;
 
+import com.demo.myspring.beans.BeanException;
+
 /**
  * Spring bean factory. Basic client of a bean container.
  *
@@ -7,5 +9,5 @@ package com.demo.myspring.beans.factory;
  */
 public interface BeanFactory {
 
-    Object getBean(String name) throws Exception;
+    Object getBean(String name) throws BeanException;
 }
