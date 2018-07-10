@@ -53,7 +53,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
                 singleObjects.put(name, bean);
             }
         }
-        return bean;
+        return getObjectForBeanInstance(bean, name);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
                 return createBean(name);
             }
         }
-        return bean;
+        return getObjectForBeanInstance(bean, name);
     }
 
     public Map<String, Object> getBeansForType(Class<?> type) {
