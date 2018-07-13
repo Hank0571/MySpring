@@ -26,9 +26,15 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
      */
     public void refresh() {
         refreshBeanFactory();
+        prepareBeanFactory(beanFactory);
         /// Register BeanPostProcessors before other beans.
         registerBeanPostProcessors(beanFactory);
         beanFactory.preInstantiateSingletons();
+    }
+
+    protected void prepareBeanFactory(DefaultListableBeanFactory beanFactory) {
+        /// Add ApplicationContextAwareProcessor manually
+        beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
     }
 
     /**
