@@ -20,3 +20,9 @@ myspring
     git checkout step-three
 
 增加bean工厂类，增加BeanFactoryAware接口，支持属性为字符串数组。测试代码见com.demo.myspring.example.sample.StepThree。
+
+## 4. step four
+
+    git checkout step-four
+
+实现AOP中的两个基本配置：*Advice*（前置增强）和*Pointcut*（方法名匹配）；实现基于JDK动态代理的AopProxy；实现基于配置的*ProxyFactoryBean*。
