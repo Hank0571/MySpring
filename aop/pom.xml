@@ -11,5 +11,17 @@
 
     <artifactId>aop</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>beans</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
 
 </project>

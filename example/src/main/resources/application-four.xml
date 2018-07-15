@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="simpleTest" class="com.demo.myspring.example.services.SimpleTestImpl">
+        <property name="text" value="Hello world"/>
+    </bean>
+
+    <bean id="logAroundAdvice" class="com.demo.myspring.example.services.LogAroundAdvice"/>
+    <bean id="simpleAdvice" class="com.demo.myspring.example.services.SimpleAdvice"/>
+    <bean id="pointcut" class="com.demo.myspring.aop.support.NameMatchMethodPointcut">
+        <property name="mappedName" value="sayHello"/>
+    </bean>
+    <bean id="advisor" class="com.demo.myspring.aop.support.DefaultPointcutAdvisor">
+        <property name="advice" ref="simpleAdvice"/>
+        <property name="pointcut" ref="pointcut"/>
+    </bean>
+
+    <bean id="factoryBean" class="com.demo.myspring.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <list>
+                <value>com.demo.myspring.example.services.SimpleTest</value>
+            </list>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>logAroundAdvice</value>
+                <value>advisor</value>
+            </list>
+        </property>
+        <property name="target" ref="simpleTest"/>
+    </bean>
+
+</beans>
