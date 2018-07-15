@@ -14,3 +14,9 @@ myspring
     git checkout step-two
 
 增加属性注入功能（仅单例），支持循环引用，支持后置处理器。测试代码见com.demo.myspring.example.sample.StepTwo。
+
+## 3. step three
+
+    git checkout step-three
+
+增加bean工厂类，增加BeanFactoryAware接口，支持属性为字符串数组。测试代码见com.demo.myspring.example.sample.StepThree。

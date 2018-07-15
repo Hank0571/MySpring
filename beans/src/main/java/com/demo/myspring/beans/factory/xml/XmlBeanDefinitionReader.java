@@ -68,7 +68,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     }
 
     /**
-     * Load bean definition from xml element.
+     * Load bean definition from xml element. Only support property type of String, String list or bean reference.
      *
      * @param ele
      */
@@ -100,22 +100,51 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
                 String propertyName = propertyEle.getAttribute("name");
                 String propertyValue = propertyEle.getAttribute("value");
                 String ref = propertyEle.getAttribute("ref");
-                if (propertyName == null || propertyValue == null || propertyValue.isEmpty()) {
-                    if (ref == null) {
-                        return;
-                    }
-                    /// Reference to bean.
-                    BeanReference beanReference = new BeanReference();
-                    beanReference.setBeanName(ref);
-                    beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, beanReference));
+                if (propertyName == null || propertyName.isEmpty()) {
+                    continue;
+                }
+                if (propertyValue != null && !propertyValue.isEmpty()) {
+                    parseStringElement(beanDefinition, propertyEle, propertyName);
                 } else {
-                    /// Set property value.
-                    beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, propertyValue));
+                    if (ref != null && !ref.isEmpty()) {
+                        parseBeanRefElement(beanDefinition, propertyEle, propertyName);
+                    } else {
+                        NodeList listNodeList = propertyEle.getElementsByTagName("list");
+                        if (listNodeList.getLength() == 1) {
+                            parseStringListElement(beanDefinition, propertyEle, propertyName);
+                        }
+                    }
                 }
             }
         }
 
         beanDefinition.setBeanClassName(className);
         getRegistry().registerBeanDefinition(name, beanDefinition);
+    }
+
+
+    private void parseBeanRefElement(BeanDefinition beanDefinition, Element element, String propertyName) {
+        String ref = element.getAttribute("ref");
+        BeanReference beanReference = new BeanReference();
+        beanReference.setBeanName(ref);
+        beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, beanReference));
+    }
+
+    private void parseStringElement(BeanDefinition beanDefinition, Element element, String propertyName) {
+        String propertyValue = element.getAttribute("value");
+        beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, propertyValue));
+    }
+
+    private void parseStringListElement(BeanDefinition beanDefinition, Element element, String propertyName) {
+        NodeList valueNodeList = element.getElementsByTagName("value");
+        int length = valueNodeList.getLength();
+        if (length > 0) {
+            String[] strArray = new String[length];
+            for (int j = 0; j < length; j++) {
+                Node valueNode = valueNodeList.item(j);
+                strArray[j] = valueNode.getTextContent();
+            }
+            beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, strArray));
+        }
     }
 }

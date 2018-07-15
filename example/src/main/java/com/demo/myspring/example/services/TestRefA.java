@@ -1,5 +1,7 @@
 package com.demo.myspring.example.services;
 
+import com.demo.myspring.example.services.TestRefB;
+
 /**
  * Created by Marter on 7/5/18.
  */
