@@ -12,8 +12,7 @@ import com.demo.myspring.example.services.TestRefC;
 public class StepTwo {
 
     public static void main(String[] args) throws Exception {
-        String[] paths = new String[1];
-        paths[0] = "application-two.xml";
+        String[] paths = new String[]{"application-two.xml"};
         ApplicationContext ctx = new ClassPathXmlApplicationContext(paths);
         TestRefA testRefA = (TestRefA)ctx.getBean("testRefA");
         testRefA.sayHello();

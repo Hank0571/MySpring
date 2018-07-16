@@ -10,8 +10,7 @@ import com.demo.myspring.example.services.HelloService;
 public class StepOne {
 
     public static void main(String[] args) throws Exception {
-        String[] paths = new String[1];
-        paths[0] = "application.xml";
+        String[] paths = new String[]{"application.xml"};
         ApplicationContext ctx = new ClassPathXmlApplicationContext(paths);
         HelloService helloService = (HelloService)ctx.getBean("helloService");
         helloService.sayHello();
